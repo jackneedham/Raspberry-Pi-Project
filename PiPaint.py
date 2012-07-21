@@ -3,7 +3,7 @@ import sys
 
 # custom GUI library imports
 from MainWindow import MainWindow
-
+#ssssssssssssssssssssssssssss
 class PiPaint:
 	def __init__(self):
 		self.width = 1280
