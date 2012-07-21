@@ -6,7 +6,7 @@ class Slider:
 		self.x = x
 		self.y = y
 		self.width = w
-		self.lowest, self.heighest = rang
+		self.lowest, self.highest = rang
 		self.slider_pos = 0
 		self.offset_x = 0
 		self.clicked = False
@@ -42,8 +42,11 @@ class Slider:
 			
 	
 	def get_value(self):
-		return (((0.0+self.slider_pos)/(self.width-10.0))*(self.heighest))+self.lowest
-			
+		return (((0.0+self.slider_pos)/(self.width-10.0))*(self.highest))+self.lowest
+	
+	def set_value(self, value):
+		self.slider_pos = int(((value+0.0)/(self.highest+0.0))*(self.width-10))
+
 	def is_clicked(self,x,y,w,h):
 		mx, my = pygame.mouse.get_pos()
 		if pygame.mouse.get_pressed()[0]:
