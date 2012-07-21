@@ -5,6 +5,7 @@ from GUI.Toolbar import Toolbar
 from GUI.FileBrowser import FileBrowser
 from GUI.ToolbarButton import ToolbarButton # possibly put this in GUI.Toolbar
 from ToolWindow import ToolWindow
+from ColorWheel import ColorWheel
 from Notepad import Notepad
 
 class MainWindow(Window):
@@ -12,19 +13,22 @@ class MainWindow(Window):
 		Window.__init__(self,x,y,w,h,p)
 		self.windows = []
 		self.windows.append(Window(10,10,250,250,self.parent)) # testing window appended
+		self.windows.append(ColorWheel(100,300,300,300,self.parent)) # testing window appended
 
 		# create toolbar
 		self.toolbar = Toolbar(self.parent)
 		self.toolbar.items.append(ToolbarButton(0,0,'View', self.parent, ['Tools']))
 		self.toolbar.render() # item appended, needs to be re-rendered
-
+		self.draw()
 
 	def draw(self):
 		self.bar.draw()
 		Window.draw(self)
+			
+
 	def update(self, mb_up, scrolldown, scrollup):
 		self.surface.fill((200,200,200))
-
+		
 		# handle toolbar events
 		self.toolbar_events(mb_up)
 
@@ -65,7 +69,6 @@ class MainWindow(Window):
 				storage = self.windows[w]
 				self.windows.remove(self.windows[w])
 				self.windows.append(storage)
-
 			self.windows[w].draw()
 		self.toolbar.draw()
 
