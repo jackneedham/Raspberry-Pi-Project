@@ -10,6 +10,7 @@ class FileBrowser(Window):
 		self.file_system = OSFS('/')
 		self.width = w
 		self.height = h
+		self.selected = ''
 		self.surface = pygame.Surface((self.width, self.height))
 		self.scroll_pane = ScrollPane(10,30,self.width-20, self.height-70, 10)
 		Window.__init__(self, x, y, w, h, parent, 'File Browser')
@@ -68,6 +69,8 @@ class FileBrowser(Window):
 						self.file_system = self.file_system.makeopendir(button.text)
 						print self.file_system.getsyspath('/')
 						self.render()
+					else:
+						self.selected = button.text
 
 		if self.okaybtn.is_clicked(self.x+self.okaybtn.x, self.y+self.okaybtn.y, mouseclick):
 			self.complete = True

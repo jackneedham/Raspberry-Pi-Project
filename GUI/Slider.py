@@ -13,19 +13,18 @@ class Slider:
 		self.render()
 		
 	def render(self):
-		self.surface = pygame.Surface((self.width, 10))
-		self.slider = pygame.Surface((10,10))
-		self.slider.fill((255,0,255))
+		self.surface = pygame.Surface((self.width, 20))
+		self.slider = pygame.image.load('img/slider.png').convert_alpha()
 
 	def draw(self, parent):
 		self.surface.fill((255,255,255))
-		pygame.draw.line(self.surface, (0,0,0), (0,5), (self.width, 5))
+		pygame.draw.line(self.surface, (0,0,0), (0,7), (self.width, 7))
 		self.surface.blit(self.slider, (self.slider_pos, 0))
 		parent.blit(self.surface, (self.x,self.y))
 		
 	def update(self, absx, absy):
 		if not self.clicked:
-			if self.is_clicked(absx+self.slider_pos, absy, 10, 10):
+			if self.is_clicked(absx+self.slider_pos, absy, 20, 20):
 				self.clicked = True
 				mx, my = pygame.mouse.get_pos()
 				scrollx = absx+self.slider_pos
@@ -37,15 +36,15 @@ class Slider:
 			self.clicked = False
 		if self.slider_pos < 0:
 			self.slider_pos = 0
-		if self.slider_pos+10 > self.width:
-			self.slider_pos = self.width-10
+		if self.slider_pos+20 > self.width:
+			self.slider_pos = self.width-20
 			
 	
 	def get_value(self):
-		return (((0.0+self.slider_pos)/(self.width-10.0))*(self.highest))+self.lowest
+		return (((0.0+self.slider_pos)/(self.width-20.0))*(self.highest))+self.lowest
 	
 	def set_value(self, value):
-		self.slider_pos = int(((value+0.0)/(self.highest+0.0))*(self.width-10))
+		self.slider_pos = int(((value+0.0)/(self.highest+0.0))*(self.width-20))
 
 	def is_clicked(self,x,y,w,h):
 		mx, my = pygame.mouse.get_pos()

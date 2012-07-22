@@ -6,14 +6,14 @@ from GUI.FileBrowser import FileBrowser
 from GUI.ToolbarButton import ToolbarButton # possibly put this in GUI.Toolbar
 from ToolWindow import ToolWindow
 from ColorWheelWindow import ColorWheelWindow
-from Notepad import Notepad
+from CanvasWindow import CanvasWindow
 
 class MainWindow(Window):
 	def __init__(self,x,y,w,h,p):
 		Window.__init__(self,x,y,w,h,p)
 		self.windows = []
 		self.windows.append(Window(10,10,250,250,self.parent)) # testing window appended
-		self.windows.append(ColorWheelWindow(100,300,350,190,self.parent)) # testing window appended
+		self.windows.append(ColorWheelWindow(100,300,280,260,self.parent)) # testing window appended
 
 		# create toolbar
 		self.toolbar = Toolbar(self.parent)
@@ -70,6 +70,11 @@ class MainWindow(Window):
 				self.windows.remove(self.windows[w])
 				self.windows.append(storage)
 			self.windows[w].draw()
+			if self.windows[w].title == 'File Browser':
+				if self.windows[w].complete:
+					image_file = pygame.image.load(self.windows[w].file_system.getsyspath('/')+'/'+self.windows[w].selected)
+					self.windows.append(CanvasWindow(300,300,self.parent,image_file)) # testing window appended
+					self.windows.remove(self.windows[w])
 		self.toolbar.draw()
 
 	def toolbar_events(self, mouseclick):
