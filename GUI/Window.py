@@ -22,7 +22,7 @@ class Window:
 		self.surface.fill((255,255,255))
 		self.bar = WindowBar(self.surface, self.x, self.y, self.title)
 
-	def update(self, mouseclick, scrolldown=False, scrollup=False):
+	def update(self, mouseclick, scrolldown=False, scrollup=False, keypressed=''):
 		if self.isClicked():
 			if self.bar.isClicked():
 				if not self.clicked:

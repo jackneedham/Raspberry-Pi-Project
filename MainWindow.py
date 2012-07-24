@@ -17,7 +17,7 @@ class MainWindow(Window):
 
 		# create toolbar
 		self.toolbar = Toolbar(self.parent)
-		self.toolbar.items.append(ToolbarButton(0,0,'View', self.parent, ['Tools']))
+		self.toolbar.items.append(ToolbarButton(0,0,'View', self.parent, ['Tools', 'Colours']))
 		self.toolbar.render() # item appended, needs to be re-rendered
 		self.draw()
 
@@ -26,7 +26,7 @@ class MainWindow(Window):
 		Window.draw(self)
 			
 
-	def update(self, mb_up, scrolldown, scrollup):
+	def update(self, mb_up, scrolldown, scrollup, keypressed):
 		self.surface.fill((200,200,200))
 		
 		# handle toolbar events
@@ -60,7 +60,7 @@ class MainWindow(Window):
 		# WINDOW MANAGEMENT #
 		for w in xrange(len(self.windows)):
 			if w == len(self.windows)-1:
-				self.windows[w].update(mb_up, scrolldown, scrollup)
+				self.windows[w].update(mb_up, scrolldown, scrollup, keypressed)
 				# pass the absolute position
 				if self.windows[w].exit_btn.is_clicked(self.windows[w].x+self.windows[w].exit_btn.x, self.windows[w].y+self.windows[w].exit_btn.y, mb_up):
 					self.windows.remove(self.windows[w])
@@ -73,7 +73,7 @@ class MainWindow(Window):
 			if self.windows[w].title == 'File Browser':
 				if self.windows[w].complete:
 					image_file = pygame.image.load(self.windows[w].file_system.getsyspath('/')+'/'+self.windows[w].selected)
-					self.windows.append(CanvasWindow(300,300,self.parent,image_file)) # testing window appended
+					self.windows.append(CanvasWindow(300,300,self.parent,image_file, self.windows[w].selected)) # testing window appended
 					self.windows.remove(self.windows[w])
 		self.toolbar.draw()
 
@@ -85,6 +85,8 @@ class MainWindow(Window):
 			elif clicked.text == 'Tools':
 				self.windows.append(ToolWindow(100, 100, 400, 400, self.parent))
 				mouseclick = False
+			elif clicked.text == 'Colours':
+				self.windows.append(ColorWheelWindow(100,300,280,260,self.parent))
 			elif clicked.text == 'Open':
 				self.windows.append(FileBrowser(0,0,600,400,self.parent))
 

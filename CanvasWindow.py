@@ -6,7 +6,7 @@ from GUI.Canvas import Canvas
 class CanvasWindow(Window):
 	def __init__(self,x,y,p,img,title="Canvas Window"):
 		w = img.get_width()
-		h = img.get_height()
+		h = img.get_height()+20
 		Window.__init__(self,x,y,w,h,p,title)
 		self.canvas = Canvas(0,20,self.width, self.height, img)
 		

@@ -3,6 +3,7 @@ from fs.osfs import OSFS
 from Window import Window
 from Button import Button
 from ScrollPane import ScrollPane
+from Input import Input
 
 class FileBrowser(Window):
 	def __init__(self, x, y, w, h, parent):
@@ -18,15 +19,16 @@ class FileBrowser(Window):
 		self.okaybtn.x = self.width-self.okaybtn.surface.get_width()-10
 		self.okaybtn.render()
 		self.complete = False
+		self.textinput = Input(10, self.height-28, self.width - 30 - self.okaybtn.width)
 		self.render()
 
 	def render(self):
 		self.buttons = []
-		self.buttons.append(Button(0, 10, '...', self.surface, (255,255,255)))
+		self.buttons.append(Button(0, 10, '...', self.surface, (255,255,255), vpad=0))
 		currenty = 30
 		for directory in self.file_system.listdir():
 			if directory[0] != '.':
-				self.buttons.append(Button(0,currenty,directory, self.surface, (255,255,255)))
+				self.buttons.append(Button(10,currenty,directory, self.surface, (255,255,255), hpad =0, vpad=0))
 				currenty += 20
 		self.scroll_pane.content_height = currenty+10
 		if self.scroll_pane.content_height < self.scroll_pane.height:
@@ -36,18 +38,17 @@ class FileBrowser(Window):
 
 		Window.render(self)
 
-	def update(self, mouseclick, scrolldown, scrollup):
+	def update(self, mouseclick, scrolldown, scrollup, keypressed):
 		self.scroll_pane.scrolldown = scrolldown
 		self.scroll_pane.scrollup = scrollup
 		self.scroll_pane.update(self.x+self.scroll_pane.x, self.y+self.scroll_pane.y)
-
+		self.textinput.update(self.x+self.textinput.x, self.y+self.textinput.y, mouseclick, keypressed)
 		if scrolldown or scrollup:
 			mouseclick = False
 		mx, my = pygame.mouse.get_pos()
 		if mx>self.x+self.scroll_pane.x and mx < self.x+self.scroll_pane.x + self.scroll_pane.width and my > self.y+self.scroll_pane.y and my < self.y+self.scroll_pane.y+self.scroll_pane.height:
 			for button in self.buttons:
 				if button.is_clicked(self.x+self.scroll_pane.x+button.x, self.y+self.scroll_pane.y+self.scroll_pane.content_y+button.y, mouseclick):
-					print 'sdf'
 					if button.text == '...':
 						path = self.file_system.getsyspath('/').split('/')
 						for item in path:
@@ -71,9 +72,21 @@ class FileBrowser(Window):
 						self.render()
 					else:
 						self.selected = button.text
+						self.textinput.text = button.text
+						self.textinput.render()
+				if button.text == self.selected and button.colour == (255,255,255):
+					button.colour = (200,220,255)
+					button.surface.fill(button.colour)
+					button.render()
+				elif button.text != self.selected and button.colour == (200,220,255):
+					button.colour == (255,255,255)
+					button.surface.fill(button.colour)
+					button.render()
 
 		if self.okaybtn.is_clicked(self.x+self.okaybtn.x, self.y+self.okaybtn.y, mouseclick):
 			self.complete = True
+
+		self.selected = self.textinput.text
 
 		Window.update(self,mouseclick, scrolldown, scrollup)
 
@@ -81,6 +94,7 @@ class FileBrowser(Window):
 		for button in self.buttons:
 			button.draw(self.scroll_pane.content_surface)
 		self.okaybtn.draw(self.surface)
+		self.textinput.draw(self.surface)
 		self.scroll_pane.draw(self.surface)
 		
 		Window.draw(self)		

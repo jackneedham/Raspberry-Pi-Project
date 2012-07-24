@@ -47,7 +47,7 @@ class ColorWheelWindow(Window):
 		pygame.draw.line(self.surface, (0,0,0), (zerox,zeroy+23), (zerox+23, zeroy+23),2)
 		Window.draw(self)
 		
-	def update(self, mouseclick, scrolldown, scrollup):
+	def update(self, mouseclick, scrolldown, scrollup, keypressed):
 
 		if self.wheel.is_clicked(self.x+self.wheel.x, self.y+self.wheel.y):
 			r,g,b,a = self.wheel.get_color()

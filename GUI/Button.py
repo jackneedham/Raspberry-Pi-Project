@@ -3,7 +3,7 @@ import pygame
 import StyleGuide
 
 class Button:
-	def __init__(self, x, y, text, parent, c=(150,150,150)):
+	def __init__(self, x, y, text, parent, c=(150,150,150), hpad=20, vpad=10):
 		self.x = x
 		self.y = y
 		self.colour = c
@@ -12,8 +12,10 @@ class Button:
 		pygame.font.init()
 		self.font = pygame.font.SysFont('Sans', StyleGuide.get_font_size())
 		self.width, self.height = self.font.size(self.text)
-		self.width += 20
-		self.height += 10
+		self.hpad = hpad
+		self.vpad = vpad
+		self.width += self.hpad
+		self.height += self.vpad
 		self.surface = pygame.Surface((self.width, self.height))
 		self.render()
 
@@ -23,7 +25,7 @@ class Button:
 		ir = 255-r
 		ig = 255-g
 		ib = 255-b
-		self.surface.blit(self.font.render(self.text, True, (ir,ig,ib)),(10,5))
+		self.surface.blit(self.font.render(self.text, True, (ir,ig,ib)),(self.hpad/2.0,self.vpad/2.0))
 
 	def is_clicked(self, absx, absy, mouseclick):
 		if mouseclick:
