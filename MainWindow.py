@@ -4,6 +4,7 @@ from GUI.Button import Button
 from GUI.Toolbar import Toolbar
 from GUI.FileBrowser import FileBrowser
 from GUI.ToolbarButton import ToolbarButton # possibly put this in GUI.Toolbar
+from GUI.Ask import Ask
 from ToolWindow import ToolWindow
 from ColorWheelWindow import ColorWheelWindow
 from CanvasWindow import CanvasWindow
@@ -11,16 +12,20 @@ from CanvasWindow import CanvasWindow
 class MainWindow(Window):
 	def __init__(self,x,y,w,h,p):
 		Window.__init__(self,x,y,w,h,p)
+		self.answergoeshere =''
 		self.windows = []
 		self.windows.append(Window(10,10,250,250,self.parent)) # testing window appended
 		self.windows.append(ColorWheelWindow(100,300,280,260,self.parent)) # testing window appended
-
+		newdoc =pygame.Surface((640,480))
+		newdoc.fill((255,255,255))
+		self.windows.append(CanvasWindow(300,300,self.parent,newdoc))
 		# create toolbar
 		self.toolbar = Toolbar(self.parent)
-		self.toolbar.items.append(ToolbarButton(0,0,'View', self.parent, ['Tools', 'Colours']))
+		self.toolbar.items.append(ToolbarButton(0,0,'File', self.parent, ['New', 'Open']))
+		self.toolbar.items.append(ToolbarButton(0,0,'View', self.parent, ['Tools', 'Colours', 'Answer this']))
 		self.toolbar.render() # item appended, needs to be re-rendered
 		self.draw()
-
+		
 	def draw(self):
 		self.bar.draw()
 		Window.draw(self)
@@ -57,26 +62,40 @@ class MainWindow(Window):
 					item.show_menu = False
 					item.render()
 
-		# WINDOW MANAGEMENT #
-		for w in xrange(len(self.windows)):
-			if w == len(self.windows)-1:
-				self.windows[w].update(mb_up, scrolldown, scrollup, keypressed)
-				# pass the absolute position
-				if self.windows[w].exit_btn.is_clicked(self.windows[w].x+self.windows[w].exit_btn.x, self.windows[w].y+self.windows[w].exit_btn.y, mb_up):
+		
+		try:
+			# update the last most element in the windows list, which is the one
+			# currently in focus
+			self.windows[-1].update(mb_up, scrolldown, scrollup, keypressed)
+			
+			for w in xrange(len(self.windows)):
+				if self.windows[w].title == 'File Browser':
+					if self.windows[w].complete:
+						image_file = pygame.image.load(self.windows[w].file_system.getsyspath('/')+'/'+self.windows[w].selected)
+						self.windows.append(CanvasWindow(300,300,self.parent,image_file, self.windows[w].selected)) # testing window appended
+						self.windows.remove(self.windows[w])
+				self.windows[w].draw()
+				if self.windows[w].exit_btn.is_clicked(self.windows[w].x+self.windows[w].exit_btn.x,
+				self.windows[w].y+self.windows[w].exit_btn.y, mb_up):
 					self.windows.remove(self.windows[w])
 					break
-			elif self.windows[w].isClicked() and not self.windows[w-1].isClicked() and not self.windows[len(self.windows)-1].isClicked() and not self.windows[len(self.windows)-1].clicked:
-				storage = self.windows[w]
-				self.windows.remove(self.windows[w])
-				self.windows.append(storage)
-			self.windows[w].draw()
-			if self.windows[w].title == 'File Browser':
-				if self.windows[w].complete:
-					image_file = pygame.image.load(self.windows[w].file_system.getsyspath('/')+'/'+self.windows[w].selected)
-					self.windows.append(CanvasWindow(300,300,self.parent,image_file, self.windows[w].selected)) # testing window appended
-					self.windows.remove(self.windows[w])
+				if self.windows[w].is_clicked() and w != len(self.windows)-1:
+					change = True
+					for window in range(len(self.windows)-1,0,-1):
+						if self.windows[window].clicked:
+							change = False
+						if window > w and self.windows[window].is_clicked():
+							change=False
+					if change:
+						store = self.windows[w]
+						self.windows.remove(self.windows[w])
+						self.windows.append(store)
+		except IndexError:
+			pass #it's cool, there are just no windows on the screen
+			
+		
 		self.toolbar.draw()
-
+		
 	def toolbar_events(self, mouseclick):
 		toolbar_clicked = self.toolbar.get_clicked(mouseclick) # returns a list of all clicked elements
 		for clicked in toolbar_clicked:
@@ -87,8 +106,13 @@ class MainWindow(Window):
 				mouseclick = False
 			elif clicked.text == 'Colours':
 				self.windows.append(ColorWheelWindow(100,300,280,260,self.parent))
+			elif clicked.text == 'New':		
+				newdoc =pygame.Surface((640,480))
+				newdoc.fill((255,255,255))
+				self.windows.append(CanvasWindow(300,300,self.parent,newdoc))
 			elif clicked.text == 'Open':
 				self.windows.append(FileBrowser(0,0,600,400,self.parent))
+			elif clicked.text == 'Answer this':
+				self.windows.append(Ask("Favourite Color?", self.parent, self.answergoeshere))
+		
 
-	def testtask(self):
-		self.surface.fill((200,200,200))

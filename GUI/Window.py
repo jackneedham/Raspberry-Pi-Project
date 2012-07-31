@@ -2,7 +2,7 @@ import pygame
 from WindowBar import WindowBar
 from ExitButton import ExitButton
 class Window:
-	def __init__(self, x, y, width, height, parent, title=None):
+	def __init__(self, x, y, width, height, parent, title=None, fullcontrol=False):
 		self.type = 'REGULAR'
 		self.x = x
 		self.y = y
@@ -10,9 +10,9 @@ class Window:
 		self.height = height
 		self.parent = parent
 		self.title = title
-
+		self.fullcontrol = fullcontrol
 		self.render()
-
+		
 		self.exit_btn = ExitButton(self.width-26, 0, "X", self.surface)
 		self.exit_btn.x = self.width - self.exit_btn.width
 		self.clicked = False
@@ -23,8 +23,8 @@ class Window:
 		self.bar = WindowBar(self.surface, self.x, self.y, self.title)
 
 	def update(self, mouseclick, scrolldown=False, scrollup=False, keypressed=''):
-		if self.isClicked():
-			if self.bar.isClicked():
+		if self.is_clicked():
+			if self.bar.is_clicked():
 				if not self.clicked:
 					self.clicked = True
 					cx, cy = pygame.mouse.get_pos()
@@ -38,7 +38,7 @@ class Window:
 			self.render()
 			self.clicked = False
 
-	def isClicked(self):
+	def is_clicked(self):
 		if pygame.mouse.get_pressed()[0]:
 			mx, my = pygame.mouse.get_pos()
 			if mx > self.x and mx < self.x + self.width and my > self.y and my < self.y + self.height:

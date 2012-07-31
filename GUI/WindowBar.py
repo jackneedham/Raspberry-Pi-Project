@@ -16,7 +16,7 @@ class WindowBar:
 		if self.title != None:
 			self.button = Button(0, 0, self.title, self.surface, (100,100,100))
 
-	def isClicked(self):
+	def is_clicked(self):
 		# doesn't actually check if clicked, just mouse over
 		mx, my = pygame.mouse.get_pos()
 		if mx > self.absx and mx < self.absx + self.width and my > self.absy and my < self.absy + self.height:

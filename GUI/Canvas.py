@@ -10,3 +10,4 @@ class Canvas:
 
 	def draw(self, p):
 		p.blit(self.surface, (self.x,self.y))
+

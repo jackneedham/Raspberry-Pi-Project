@@ -30,7 +30,7 @@ class PiPaint:
 				if event.type == pygame.QUIT:
 					pygame.quit()
 					sys.exit()
-				if event.type == pygame.MOUSEBUTTONDOWN:
+				if event.type == pygame.MOUSEBUTTONUP:
 					# regular mouse is clicked var
 					mb_up = True
 					# scrolling vars

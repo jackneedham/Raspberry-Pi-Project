@@ -8,7 +8,6 @@ class Toolbar:
 		self.surface = pygame.Surface((self.width, self.height))
 		self.surface.fill((230,230,230))
 		self.items = []
-		self.items.append(ToolbarButton(0,0,"File", self.parent,['Open', 'Exit']))
 		self.render()
 
 	def render(self):
