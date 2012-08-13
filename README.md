@@ -5,4 +5,5 @@ Requirements
 * pygame
 
 Quickstart
-	python PiPaint.py
+
+    python PiPaint.py
