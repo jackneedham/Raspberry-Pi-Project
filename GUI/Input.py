@@ -12,20 +12,24 @@ class Input:
 		self.font = pygame.font.SysFont('Sans', StyleGuide.get_font_size())
 		self.focused = False
 		self.insertion_point = len(self.text)
+		self.insertion_x = 0
 		self.render()
 	
 	def render(self):
-		self.insertion_x = 2
-		for letter in range(self.insertion_point):
-			w,h = self.font.size(self.text[letter])
-			self.insertion_x += w
-			
 		self.surface.fill((255,255,255))
 		if self.focused:
 			col = (0,0,0)
 		else:
 			col = (200,200,200)
-		render = self.font.render(self.text, True, (0,0,0))
+		t = []
+		for l in self.text:
+			t.append(l)
+		self.text = t
+		self.text.insert(self.insertion_point, '|')
+		render = self.font.render(''.join(self.text), True, (0,0,0))
+		self.text.remove('|')
+		self.text = ''.join(self.text)
+		
 		self.surface.blit(render, (3,3))
 		pygame.draw.line(self.surface, col, (0,0), (self.width, 0))
 		pygame.draw.line(self.surface, col, (0,0), (0, self.height))

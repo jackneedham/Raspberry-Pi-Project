@@ -40,7 +40,7 @@ class ColorWheelWindow(Window):
 		zerox = self.custom_colors.x+btn.x # just using vars to
 		zeroy = self.custom_colors.y+btn.y # keep the lines nice and short
 		# manually drawing lines because a for loop is achieves the same thing
-		# in only a couple of lines less but with far more resources used
+		# in only a couple of lines less but with more resources used
 		pygame.draw.line(self.surface, (0,0,0), (zerox,zeroy), (zerox+23, zeroy),2)
 		pygame.draw.line(self.surface, (0,0,0), (zerox,zeroy), (zerox, zeroy+23),2)
 		pygame.draw.line(self.surface, (0,0,0), (zerox+23,zeroy), (zerox+23, zeroy+24),2)
@@ -48,7 +48,6 @@ class ColorWheelWindow(Window):
 		Window.draw(self)
 		
 	def update(self, mouseclick, scrolldown, scrollup, keypressed):
-
 		if self.wheel.is_clicked(self.x+self.wheel.x, self.y+self.wheel.y):
 			r,g,b,a = self.wheel.get_color()
 			
@@ -76,14 +75,23 @@ class ColorWheelWindow(Window):
 					g = slider.get_value()
 				if slider.title == 'blue':
 					b = slider.get_value()
-
-		for button in self.buttons:
-			if button.is_clicked(self.x+button.x, self.y+button.y, mouseclick):
-				if button.text == 'Choose':
-					self.custom_colors.grid[self.custom_selected].color = self.current_color
-					self.custom_colors.grid[self.custom_selected].surface.fill(self.current_color)
-						
+					
 		self.current_color = (r,g,b)
 		self.current_color_box.fill(self.current_color)
+		self.custom_colors.grid[self.custom_selected].color = self.current_color
+		self.custom_colors.grid[self.custom_selected].surface.fill(self.current_color)
+						
 		Window.update(self, mouseclick, scrolldown, scrollup)
 
+	def get_color(self):
+		if self.custom_selected > 7:
+			y = 1
+			x = self.custom_selected - 8
+		else:
+			y = 0
+			x = self.custom_selected
+		x*=25
+		y*=25
+		x += self.custom_colors.x
+		y += self.custom_colors.y
+		return self.surface.get_at((x+10, y+10))

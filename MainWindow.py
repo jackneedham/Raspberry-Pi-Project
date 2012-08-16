@@ -12,18 +12,22 @@ from CanvasWindow import CanvasWindow
 class MainWindow(Window):
 	def __init__(self,x,y,w,h,p):
 		Window.__init__(self,x,y,w,h,p)
-		self.answergoeshere =''
 		self.windows = []
-		self.windows.append(Window(10,10,250,250,self.parent)) # testing window appended
-		self.windows.append(ColorWheelWindow(100,300,280,260,self.parent)) # testing window appended
-		newdoc =pygame.Surface((640,480))
+		
+		self.windows.append(ColorWheelWindow(100,300,280,260,self.parent))
+		self.current_color = (255,100,0)
+	
+		# blank canvas window
+		newdoc = pygame.Surface((640,480))
 		newdoc.fill((255,255,255))
 		self.windows.append(CanvasWindow(300,300,self.parent,newdoc))
+		
 		# create toolbar
 		self.toolbar = Toolbar(self.parent)
 		self.toolbar.items.append(ToolbarButton(0,0,'File', self.parent, ['New', 'Open']))
 		self.toolbar.items.append(ToolbarButton(0,0,'View', self.parent, ['Tools', 'Colours', 'Answer this']))
 		self.toolbar.render() # item appended, needs to be re-rendered
+
 		self.draw()
 		
 	def draw(self):
@@ -64,8 +68,8 @@ class MainWindow(Window):
 
 		
 		try:
-			# update the last most element in the windows list, which is the one
-			# currently in focus
+			# Update the last most element in the windows list, which is the one
+			# currently in focus.
 			self.windows[-1].update(mb_up, scrolldown, scrollup, keypressed)
 			
 			for w in xrange(len(self.windows)):
@@ -74,6 +78,10 @@ class MainWindow(Window):
 						image_file = pygame.image.load(self.windows[w].file_system.getsyspath('/')+'/'+self.windows[w].selected)
 						self.windows.append(CanvasWindow(300,300,self.parent,image_file, self.windows[w].selected)) # testing window appended
 						self.windows.remove(self.windows[w])
+				elif self.windows[w].title[:6] == 'Canvas':
+					self.windows[w].draw_color = self.current_color
+				elif self.windows[w].title == 'Color Picker':
+					self.current_color = self.windows[w].get_color()
 				self.windows[w].draw()
 				if self.windows[w].exit_btn.is_clicked(self.windows[w].x+self.windows[w].exit_btn.x,
 				self.windows[w].y+self.windows[w].exit_btn.y, mb_up):
@@ -91,7 +99,7 @@ class MainWindow(Window):
 						self.windows.remove(self.windows[w])
 						self.windows.append(store)
 		except IndexError:
-			pass #it's cool, there are just no windows on the screen
+			pass # It's cool, there are just no windows on the screen.
 			
 		
 		self.toolbar.draw()

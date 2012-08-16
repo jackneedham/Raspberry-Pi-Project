@@ -5,6 +5,8 @@ from GUI.Canvas import Canvas
 
 class CanvasWindow(Window):
 	def __init__(self,x,y,p,img,title="Canvas Window"):
+		if title!="Canvas Window":
+			title = "Canvas - "+title
 		w = img.get_width()
 		h = img.get_height()+20
 		Window.__init__(self,x,y,w,h,p,title)
@@ -12,6 +14,7 @@ class CanvasWindow(Window):
 		self.old_cursor_x = 0
 		self.old_cursor_y = 0
 		self.drawing = False
+		self.draw_color = (0,0,0)
 		
 	def draw(self):
 		self.canvas.draw(self.surface)
@@ -25,7 +28,7 @@ class CanvasWindow(Window):
 			my -= self.y+20
 			if mx>=0 and my>=0:
 				if self.old_cursor_x != None:
-					pygame.draw.line(self.canvas.surface, (0,0,0), (self.old_cursor_x,self.old_cursor_y), (mx, my),6)
+					pygame.draw.line(self.canvas.surface, self.draw_color, (self.old_cursor_x,self.old_cursor_y), (mx, my),6)
 				self.old_cursor_x = mx
 				self.old_cursor_y = my
 		else:
